@@ -3,7 +3,6 @@ from flask_cors import CORS
 import os
 
 def create_app():
-    # Tell Flask where the templates and static files are
     app = Flask(__name__, template_folder='templates', static_folder='static')
     CORS(app)
     

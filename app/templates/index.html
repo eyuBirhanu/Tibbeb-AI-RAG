@@ -16,15 +16,15 @@
     <link rel="icon" href="https://lucyhub.ai/favicon.ico">
 </head>
 
-<body>
+<body style="overflow: hidden;"> <!-- Prevents the whole page from ever scrolling -->
 
-    <div class="main-wrapper">
+    <div class="main-wrapper vh-100 d-flex flex-column">
         <!-- Header -->
         <div class="top-nav d-flex justify-content-between align-items-center px-4 py-3 border-bottom shadow-sm">
             <div class="brand d-flex align-items-center gap-2">
                 <div class="avatar-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
                     style="width: 40px; height: 40px;">
-                    <img src="https://lucyhub.ai/favicon.ico" alt="Lucy AI">
+                    <img src="https://lucyhub.ai/favicon.ico" alt="Lucy AI" style="width: 100%; border-radius: 50%;">
                 </div>
                 <div class="d-flex flex-column">
                     <span class="fw-bold">Lucy AI</span>
@@ -65,7 +65,8 @@
                                 <h6 class="text-uppercase text-muted small fw-bold mb-3">Document Context</h6>
 
                                 <!-- Upload Area -->
-                                <div class="upload-zone rounded p-4 text-center" id="dropZone">
+                                <div class="upload-zone rounded p-4 text-center border" id="dropZone"
+                                    style="border-style: dashed !important;">
                                     <input type="file" id="pdfFile" accept="application/pdf" hidden
                                         onchange="handleFileSelect()">
                                     <div class="cursor-pointer" onclick="document.getElementById('pdfFile').click()">
@@ -107,9 +108,9 @@
                                     </div>
                                 </div>
                                 <hr class="border-secondary opacity-25">
-                                <button class="btn btn-outline-danger btn-sm w-100 rounded-pill fw-bold"
+                                <button class="btn btn-sm btn-info text-white rounded-pill mt-2 w-100"
                                     onclick="clearSession()">
-                                    <i class="fas fa-trash-alt me-1"></i> Clear Session
+                                    <i class="fas fa-plus-circle me-1"></i> Start New Session
                                 </button>
                             </div>
                         </div>
@@ -117,38 +118,45 @@
                 </div>
 
                 <!-- RIGHT MAIN CHAT AREA -->
-                <div class="col-12 col-md-8 col-lg-9 h-100 d-flex flex-column chat-column position-relative">
+                <div class="col-md-8 col-lg-7 h-100 d-flex flex-column chat-column">
+                    <!-- THE + BUTTON (Visible on Mobile only) -->
+                    <button
+                        class="btn btn-light rounded-circle ms-1 d-md-none text-secondary d-flex align-items-center justify-content-center shadow-sm mt-2"
+                        type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu"
+                        aria-controls="sidebarMenu"
+                        style="width: 40px; height: 40px; border: none; background: var(--bs-secondary-bg);">
+                        <i class="fas fa-bars"></i>
+                    </button>
 
-                    <!-- Chat History -->
-                    <div class="chat-history flex-grow-1 p-3 p-md-4 overflow-auto" id="chatBox">
+                    <!-- Welcome Back Banner -->
+                    <div id="sessionBanner"
+                        class="alert alert-info m-3 d-none align-items-center justify-content-between shadow-sm"
+                        role="alert" style="border-radius: 12px;">
+                        <span class="small"><i class="fas fa-history me-2"></i> <strong>Welcome back!</strong> You are
+                            in a previous session.</span>
+                        <button class="btn btn-sm btn-info text-white rounded-pill" onclick="clearSession()">Start New
+                            Session</button>
+                    </div>
+
+                    <div class="chat-history flex-grow-1 p-4 overflow-y-auto" id="chatBox">
+                        <!-- Welcome Message -->
                         <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center opacity-50"
                             id="emptyState">
-                            <i class="fas fa-comments fa-4x mb-3 text-secondary"></i>
-                            <h4 class="fw-bold">Ready to Chat</h4>
-                            <p class="px-4">Tap the <strong>+</strong> button below to upload a document.</p>
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <h5>Ready to Chat</h5>
+                            <p class="small">Upload a document on the left to get started.</p>
                         </div>
                     </div>
 
-                    <!-- ChatGPT Style Input Area -->
-                    <div class="chat-input-area p-3 bg-body border-top">
-                        <div class="input-group rounded-pill border p-1 shadow-sm bg-body-tertiary align-items-center">
-
-                            <!-- THE + BUTTON (Visible on Mobile only) -->
-                            <button
-                                class="btn btn-light rounded-circle ms-1 d-md-none text-secondary d-flex align-items-center justify-content-center shadow-sm"
-                                type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu"
-                                aria-controls="sidebarMenu"
-                                style="width: 40px; height: 40px; border: none; background: var(--bs-secondary-bg);">
-                                <i class="fas fa-plus"></i>
-                            </button>
-
+                    <!-- Input Area (Stays frozen at the bottom) -->
+                    <div class="chat-input-area p-3 border-top bg-body">
+                        <div class="input-group bg-input rounded-pill border p-1">
                             <input type="text" id="userInput"
-                                class="form-control border-0 bg-transparent ps-3 shadow-none flex-grow-1"
-                                placeholder="Message Lucy AI..." onkeypress="handleKeyPress(event)">
-
+                                class="form-control border-0 bg-transparent ps-4 shadow-none"
+                                placeholder="Type your message..." onkeypress="handleKeyPress(event)">
                             <button
-                                class="btn btn-primary rounded-circle m-1 d-flex align-items-center justify-content-center shadow-sm"
-                                style="width: 45px; height: 45px; flex-shrink: 0;" id="sendBtn" onclick="sendMessage()">
+                                class="btn btn-primary rounded-circle m-1 d-flex align-items-center justify-content-center"
+                                style="width: 40px; height: 40px;" id="sendBtn" onclick="sendMessage()">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -163,9 +171,8 @@
         </div>
     </div>
 
-    <!-- REQUIRED Bootstrap 5 JS Bundle (for the mobile menu/offcanvas to slide up) -->
+    <!-- REQUIRED Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- Markdown Parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="/static/app.js"></script>

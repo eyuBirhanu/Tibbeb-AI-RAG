@@ -12,7 +12,7 @@ def upsert_to_pinecone(chunks, embeddings, session_id):
     vectors =[]
     for chunk, emb in zip(chunks, embeddings):
         vector_id = str(uuid.uuid4())
-        # IDEA A: We add session_id to the metadata!
+        # We add session_id to the metadata!
         metadata = {
             "text": chunk["text"], 
             "page": chunk["page"],
@@ -33,7 +33,7 @@ def query_pinecone(query_embedding, session_id, top_k=10):
     pc = Pinecone(api_key=api_key)
     index = pc.Index(index_name)
     
-    # IDEA A: Filter by session_id so users don't see each other's documents
+    # Filter by session_id so users don't see each other's documents
     result = index.query(
         vector=query_embedding,
         top_k=top_k,
@@ -52,7 +52,7 @@ def query_pinecone(query_embedding, session_id, top_k=10):
     return contexts
 
 def delete_pinecone_data(session_id):
-    """IDEA D: Deletes all vectors for a specific session to save space."""
+    """Deletes all vectors for a specific session to save space."""
     api_key = os.getenv('PINECONE_API_KEY')
     index_name = os.getenv('PINECONE_INDEX_NAME', 'lucy-rag-index')
     pc = Pinecone(api_key=api_key)

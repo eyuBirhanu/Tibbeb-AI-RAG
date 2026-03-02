@@ -1,26 +1,99 @@
 const API_BASE_URL = '/api';
 let currentSessionId = null;
 
+// Initialize
 window.onload = async () => {
-    // 1. Establish Session
+    // Load preferred theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    // Session Management: Check if user is returning
+    const savedSessionId = localStorage.getItem('lucy_session_id');
+
+    if (savedSessionId) {
+        currentSessionId = savedSessionId;
+        console.log("Returning user found. Session:", currentSessionId);
+        await loadHistory(currentSessionId);
+    } else {
+        await createNewSession();
+    }
+};
+
+
+async function createNewSession() {
     try {
         const response = await fetch(`${API_BASE_URL}/session`, { method: 'POST' });
         const data = await response.json();
         if (data.status === 'success') {
             currentSessionId = data.session_id;
-            console.log("Session Initialized:", currentSessionId);
+            localStorage.setItem('lucy_session_id', currentSessionId); // Save to browser
+            console.log("New Session Initialized:", currentSessionId);
         }
     } catch (error) {
         console.error("Connection Error:", error);
     }
+}
 
-    // 2. Load preferred theme
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-bs-theme', savedTheme);
-    updateThemeIcon(savedTheme);
+async function loadHistory(sessionId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/history/${sessionId}`);
+        const data = await response.json();
 
-    // 3. Initialize Drag and Drop Listeners
-    initDragAndDrop();
+        // If history exists and has messages
+        if (data.status === 'success' && data.history.length > 0) {
+
+            // Hide the "Ready to Chat" empty state
+            const emptyState = document.getElementById('emptyState');
+            if (emptyState) emptyState.style.display = 'none';
+
+            // Show the "Welcome Back" banner
+            const banner = document.getElementById('sessionBanner');
+            banner.classList.remove('d-none');
+            banner.classList.add('d-flex');
+
+            // Render previous messages
+            data.history.forEach(msg => {
+                // Ignore system prompts, only show user and assistant
+                if (msg.role !== 'system') {
+                    // Our appending function expects 'user' or 'bot'
+                    const sender = msg.role === 'user' ? 'user' : 'bot';
+                    appendMessage(sender, msg.content);
+                }
+            });
+
+            // Make the upload button look like it's already active
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.innerHTML = '<i class="fas fa-check"></i> Document Context Active';
+        } else if (data.status === 'error') {
+            // If the session was lost on the server, create a new one
+            await createNewSession();
+        }
+    } catch (e) {
+        console.error("Error loading history", e);
+        await createNewSession();
+    }
+}
+
+// Update clearSession to also wipe LocalStorage
+async function clearSession() {
+    if (!confirm("Are you sure? This will delete the document context and chat history to start a fresh session.")) return;
+
+    try {
+        await fetch(`${API_BASE_URL}/clear`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: currentSessionId })
+        });
+
+        // Wipe from browser memory!
+        localStorage.removeItem('lucy_session_id');
+
+        // Reload page to start completely fresh
+        window.location.reload();
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 /* ================= THEME CHANGER ================= */

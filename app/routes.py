@@ -28,7 +28,6 @@ def new_session():
 
 @main.route('/api/upload', methods=['POST'])
 def upload_pdf():
-    # We now require session_id to upload a document!
     session_id = request.form.get('session_id')
     if not session_id:
         return jsonify({"status": "error", "message": "session_id is required"}), 400
@@ -105,5 +104,15 @@ def clear_data():
         delete_pinecone_data(session_id)
         clear_session(session_id)
         return jsonify({"status": "success", "message": "Session memory and documents cleared."}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@main.route('/api/history/<session_id>', methods=['GET'])
+def get_session_history(session_id):
+    """Fetches the chat history for a returning user."""
+    try:
+        history = get_history(session_id)
+        return jsonify({"status": "success", "history": history}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

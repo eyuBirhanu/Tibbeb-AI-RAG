@@ -19,6 +19,6 @@ def get_query_embedding(text):
     response = co.embed(
         texts=[text],
         model='embed-english-v3.0',
-        input_type='search_query' # Crucial requirement for Cohere v3
+        input_type='search_query'
     )
     return response.embeddings[0]
