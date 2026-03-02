@@ -39,8 +39,8 @@ A production-grade **Retrieval-Augmented Generation (RAG)** chatbot that answers
 
 PDF text is extracted page-by-page using **PyMuPDF** (`fitz`) for high-fidelity parsing of complex layouts. The text is then split using a **sliding window** approach:
 
-- **Chunk size:** 800 characters  
-- **Overlap:** 150 characters  
+- **Chunk size:** 800 characters
+- **Overlap:** 150 characters
 
 The overlap is critical for research papers, where concepts and sentences frequently span paragraph boundaries. Without it, a chunk split mid-sentence would lose semantic coherence, degrading retrieval quality. Each chunk also retains its source **page number** for downstream citation.
 
@@ -48,8 +48,8 @@ The overlap is critical for research papers, where concepts and sentences freque
 
 ### Retrieval Settings
 
-- **Top-K:** 10 chunks retrieved per query.  
-- **Similarity Threshold:** 0.2 (cosine similarity). Chunks below this score are discarded before being sent to the LLM, preventing weakly-related noise from polluting the context window.  
+- **Top-K:** 10 chunks retrieved per query.
+- **Similarity Threshold:** 0.2 (cosine similarity). Chunks below this score are discarded before being sent to the LLM, preventing weakly-related noise from polluting the context window.
 - **Embedding alignment:** Queries are embedded with Cohere's `search_query` input type, while stored document chunks use `search_document`. This asymmetric approach is recommended by Cohere and improves vector space alignment between questions and answers.
 
 ---
@@ -201,8 +201,8 @@ Click the **"Upload PDF"** button and select any PDF document. A progress bar wi
 Type a question about the document in the chat box and press **Send**. Lucy will retrieve the most relevant chunks, generate a grounded answer with page citations (e.g., `[Page 3]`), and display it in the chat.
 
 **Step 4 — Test conversation memory**  
-Ask a follow-up question using a pronoun, for example:  
-> *"What were the main findings?"* → *"How significant were they?"*  
+Ask a follow-up question using a pronoun, for example:
+> *"What were the main findings?"* → *"How significant were they?"*
 
 Lucy will correctly resolve the pronoun using conversation history.
 
