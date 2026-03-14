@@ -3,7 +3,7 @@
 A production-grade **Retrieval-Augmented Generation (RAG)** chatbot that answers questions strictly grounded in uploaded PDF documents. Built with multi-tenant session isolation, smart conversational handling, and a responsive UI.
 
 🔗 **Live Demo:** https://lucy-rag-chatbot.onrender.com  
-📁 **Repository:** https://github.com/eyuBirhanu/lucy-rag-assessment
+📁 **Repository:** https://github.com/eyuBirhanu/Tibbeb-AI-RAG
 
 ---
 
@@ -120,7 +120,7 @@ lucy-rag-assessment/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/eyuBirhanu/lucy-rag-assessment.git
+git clone https://github.com/eyuBirhanu/Tibbeb-AI-RAG.git
 cd lucy-rag-assessment
 ```
 
