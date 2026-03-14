@@ -17,7 +17,7 @@ def generate_answer(query, contexts, history):
     context_str = "\n\n".join([f"[Page {c['page']}] {c['text']}" for c in contexts])
     
     # 2. Build the Smarter System Prompt
-    system_prompt = f"""You are 'Lucy', an advanced AI research assistant. Your goal is to help users understand the provided research paper.
+    system_prompt = f"""You are 'Tibbeb', an advanced AI research assistant. Your goal is to help users understand the provided research paper.
 
     Context from the document:
     {context_str}
